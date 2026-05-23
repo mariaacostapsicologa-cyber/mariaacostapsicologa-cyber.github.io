@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Panel · Consultorio Dra. Mafer</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Serif+Display&display=swap');
+
+  :root {
+    --verde: #1a6b4a;
+    --verde-claro: #e8f5ef;
+    --verde-medio: #2d9162;
+    --dorado: #c8952a;
+    --gris: #f5f4f0;
+    --texto: #1a1a1a;
+    --subtexto: #6b6b6b;
+    --borde: #e2e0da;
+    --rojo: #c0392b;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--gris);
+    color: var(--texto);
+    min-height: 100vh;
+  }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #0d3d28 0%, #1a6b4a 50%, #2d9162 100%);
+  }
+
+  .login-card {
+    background: white;
+    border-radius: 20px;
+    padding: 48px 40px;
+    width: 360px;
+    text-align: center;
+    box-shadow: 0 24px 60px rgba(0,0,0,0.2);
+  }
+
+  .login-card h1 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--verde);
+    margin-bottom: 4px;
+  }
+
+  .login-card p {
+    color: var(--subtexto);
+    font-size: 14px;
+    margin-bottom: 32px;
+  }
+
+  .login-card input {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    transition: border-color .2s;
+    margin-bottom: 16px;
+  }
+
+  .login-card input:focus { border-color: var(--verde); }
+
+  .btn-primary {
+    width: 100%;
+    padding: 14px;
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background .2s, transform .1s;
+  }
+
+  .btn-primary:hover { background: #145438; transform: translateY(-1px); }
+  .btn-primary:active { transform: translateY(0); }
+
+  /* MAIN APP */
+  #app { display: none; }
+
+  header {
+    background: white;
+    border-bottom: 1px solid var(--borde);
+    padding: 0 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--verde);
+  }
+
+  .logo span { color: var(--subtexto); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 400; margin-left: 8px; }
+
+  .header-actions { display: flex; gap: 12px; align-items: center; }
+
+  .btn-outline {
+    padding: 8px 18px;
+    border: 1.5px solid var(--verde);
+    color: var(--verde);
+    background: transparent;
+    border-radius: 8px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .btn-outline:hover { background: var(--verde-claro); }
+
+  .btn-sm {
+    padding: 6px 14px;
+    background: var(--verde);
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background .2s;
+  }
+
+  .btn-sm:hover { background: #145438; }
+
+  .btn-danger {
+    padding: 6px 14px;
+    background: transparent;
+    color: var(--rojo);
+    border: 1.5px solid var(--rojo);
+    border-radius: 7px;
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: all .2s;
+  }
+
+  .btn-danger:hover { background: #fdf0ef; }
+
+  main { max-width: 1100px; margin: 0 auto; padding: 32px 24px; }
+
+  /* STATS */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 32px; }
+
+  .stat-card {
+    background: white;
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid var(--borde);
+  }
+
+  .stat-card .num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    color: var(--verde);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-card .label { font-size: 13px; color: var(--subtexto); }
+
+  /* SEARCH */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 20px;
+    align-items: center;
+  }
+
+  .search-input {
+    flex: 1;
+    padding: 11px 16px;
+    border: 1.5px solid var(--borde);
+    border-radius: 10px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    background: white;
+    transition: border-color .2s;
+  }
+
+  .search-input:focus { border-color: var(--verde); }
+
+  /* TABLE */
+  .table-wrap {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--borde);
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead { background: var(--verde); }
+
+  thead th {
+    padding: 14px 20px;
+    text-align: left;
+    font-size: 12px;
+    font-weight: 600;
+    color: white;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--borde);
+    transition: background .15s;
+    cursor: pointer;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: var(--verde-claro); }
+
+  td {
+    padding: 14px 20px;
+    font-size: 14px;
+    vertical-align: middle;
+  }
+
+  .nombre-cell { font-weight: 500; }
+  .tel-cell { color: var(--subtexto); font-size: 13px; }
+
+  .badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .badge-online { background: #dff5ea; color: #1a6b4a; }
+  .badge-presencial { background: #fff3dc; color: #8a5f00; }
+  .badge-nueva { background: #e8f0ff; color: #2952b3; }
+
+  .sessions-dot {
+    display: inline-flex;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: var(--verde-claro);
+    color: var(--verde);
+    font-size: 13px;
+    font-weight: 600;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* MODAL */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: white;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 560px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 32px;
+    box-shadow: 0 24px 60px rgba(0,0,0,.2);
+  }
+
+  .modal h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--verde);
+    margin-bottom: 24px;
+  }
+
+  .field-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .field-full { grid-column: 1 / -1; }
+
+  label { display: block; font-size: 12px; font-weight: 600; color: var(--subtexto); margin-bottom: 5px; letter-spacing: .3px; text-transform: uppercase; }
+
+  input[type=text], input[type=tel], input[type=email], input[type=number], select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--borde);
+    border-radius: 9px;
+    font-size: 14px;
+    font-family: 'DM Sans', sans-serif;
+    outline: none;
+    background: white;
+    transition: border-color .2s;
+  }
+
+  input:focus, select:focus { border-color: var(--verde); }
+
+  .modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 24px;
+    padding-top: 20px;
+    border-top: 1px solid var(--borde);
+  }
+
+  /* FICHA DETAIL */
+  .ficha-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 8px; }
+  .ficha-item label { font-size: 11px; font-weight: 600; color: var(--subtexto); letter-spacing: .4px; text-transform: uppercase; margin-bottom: 3px; display: block; }
+  .ficha-item p { font-size: 15px; color: var(--texto); }
+  .ficha-item.full { grid-column: 1 / -1; }
+
+  .empty { text-align: center; padding: 48px; color: var(--subtexto); font-size: 14px; }
+
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    padding: 14px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 500;
+    color: white;
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all .3s;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.success { background: var(--verde); }
+  .toast.error { background: var(--rojo); }
+
+  @media (max-width: 640px) {
+    .stats { grid-template-columns: 1fr; }
+    .field-grid { grid-template-columns: 1fr; }
+    .ficha-grid { grid-template-columns: 1fr; }
+    main { padding: 20px 16px; }
+    header { padding: 0 16px; }
+    td { padding: 10px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-card">
+    <h1>Consultorio Dra. Mafer</h1>
+    <p>Panel de Pacientes · Acceso restringido</p>
+    <input type="text" id="server-url" placeholder="URL del servidor" value="https://asistente-consultorio-1qp0.onrender.com">
+    <input type="password" id="pin-input" placeholder="PIN de acceso" onkeydown="if(event.key==='Enter') login()">
+    <button class="btn-primary" onclick="login()">Entrar</button>
+    <p id="login-error" style="color:#c0392b;font-size:13px;margin-top:12px;display:none">PIN incorrecto</p>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <header>
+    <div class="logo">Dra. Mafer <span>Panel de Pacientes</span></div>
+    <div class="header-actions">
+      <button class="btn-outline" onclick="openModal()">+ Agregar paciente</button>
+      <button class="btn-outline" onclick="logout()">Salir</button>
+    </div>
+  </header>
+
+  <main>
+    <div class="stats">
+      <div class="stat-card">
+        <div class="num" id="stat-total">—</div>
+        <div class="label">Pacientes registrados</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-con-ficha">—</div>
+        <div class="label">Con ficha completa</div>
+      </div>
+      <div class="stat-card">
+        <div class="num" id="stat-sesiones">—</div>
+        <div class="label">Sesiones totales vistas</div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <input class="search-input" type="text" placeholder="🔍  Buscar por nombre, teléfono o cédula..." oninput="filtrar(this.value)">
+      <button class="btn-sm" onclick="cargarPacientes()">↻ Actualizar</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Paciente</th>
+            <th>Teléfono</th>
+            <th>Modalidad</th>
+            <th>Sesiones</th>
+            <th>Último contacto</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tabla-body">
+          <tr><td colspan="6" class="empty">Cargando pacientes...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </main>
+</div>
+
+<!-- MODAL AGREGAR/EDITAR -->
+<div class="overlay" id="modal-form">
+  <div class="modal">
+    <h2 id="modal-titulo">Agregar Paciente</h2>
+    <div class="field-grid">
+      <div>
+        <label>Teléfono *</label>
+        <input type="tel" id="f-telefono" placeholder="58412...">
+      </div>
+      <div>
+        <label>Sesiones vistas</label>
+        <input type="number" id="f-sesiones" value="0" min="0">
+      </div>
+      <div>
+        <label>Nombres *</label>
+        <input type="text" id="f-nombres" placeholder="María">
+      </div>
+      <div>
+        <label>Apellidos *</label>
+        <input type="text" id="f-apellidos" placeholder="González">
+      </div>
+      <div>
+        <label>Cédula</label>
+        <input type="text" id="f-cedula" placeholder="V-12.345.678">
+      </div>
+      <div>
+        <label>Edad</label>
+        <input type="text" id="f-edad" placeholder="28">
+      </div>
+      <div>
+        <label>Fecha de Nacimiento</label>
+        <input type="text" id="f-fechanac" placeholder="01/01/1996">
+      </div>
+      <div>
+        <label>Estado Civil</label>
+        <select id="f-edocivil">
+          <option value="">— Seleccionar —</option>
+          <option>Soltero/a</option>
+          <option>Casado/a</option>
+          <option>Divorciado/a</option>
+          <option>Viudo/a</option>
+          <option>Unión libre</option>
+        </select>
+      </div>
+      <div>
+        <label>Modalidad</label>
+        <select id="f-modalidad">
+          <option value="">— Seleccionar —</option>
+          <option>online</option>
+          <option>presencial</option>
+        </select>
+      </div>
+      <div>
+        <label>Teléfono de ficha</label>
+        <input type="tel" id="f-telf" placeholder="0412...">
+      </div>
+      <div class="field-full">
+        <label>Correo electrónico</label>
+        <input type="email" id="f-correo" placeholder="correo@email.com">
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-outline" onclick="closeModal()">Cancelar</button>
+      <button class="btn-primary" style="width:auto;padding:10px 28px" onclick="guardarPaciente()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL DETALLE PACIENTE -->
+<div class="overlay" id="modal-detalle">
+  <div class="modal">
+    <h2 id="detalle-nombre"></h2>
+    <div class="ficha-grid" id="detalle-body"></div>
+    <div class="modal-footer" id="detalle-footer"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  let BASE_URL = '';
+  let PIN = '';
+  let todosPacientes = [];
+  let editandoTel = null;
+
+  function login() {
+    BASE_URL = document.getElementById('server-url').value.replace(/\/$/, '');
+    PIN = document.getElementById('pin-input').value;
+    fetch(`${BASE_URL}/admin/pacientes?pin=${PIN}`)
+      .then(r => {
+        if (r.status === 401) throw new Error('PIN incorrecto');
+        return r.json();
+      })
+      .then(() => {
+        document.getElementById('login-screen').style.display = 'none';
+        document.getElementById('app').style.display = 'block';
+        cargarPacientes();
+      })
+      .catch(e => {
+        document.getElementById('login-error').style.display = 'block';
+        document.getElementById('login-error').textContent = e.message;
+      });
+  }
+
+  function logout() {
+    document.getElementById('login-screen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+    PIN = '';
+  }
+
+  function cargarPacientes() {
+    fetch(`${BASE_URL}/admin/pacientes?pin=${PIN}`)
+      .then(r => r.json())
+      .then(data => {
+        todosPacientes = data.pacientes || [];
+        actualizarStats();
+        renderTabla(todosPacientes);
+      })
+      .catch(() => toast('Error al cargar pacientes', 'error'));
+  }
+
+  function actualizarStats() {
+    document.getElementById('stat-total').textContent = todosPacientes.length;
+    document.getElementById('stat-con-ficha').textContent = todosPacientes.filter(p => p.ficha?.nombres).length;
+    document.getElementById('stat-sesiones').textContent = todosPacientes.reduce((s, p) => s + (p.sesionesVistas || 0), 0);
+  }
+
+  function renderTabla(lista) {
+    const tbody = document.getElementById('tabla-body');
+    if (!lista.length) {
+      tbody.innerHTML = '<tr><td colspan="6" class="empty">No hay pacientes registrados</td></tr>';
+      return;
+    }
+    tbody.innerHTML = lista.map(p => {
+      const nombre = p.ficha?.nombres ? `${p.ficha.nombres} ${p.ficha.apellidos}` : p.nombreWA || 'Sin nombre';
+      const mod = p.ficha?.modalidad || '—';
+      const badge = mod === 'online' ? 'badge-online' : mod === 'presencial' ? 'badge-presencial' : 'badge-nueva';
+      const fecha = p.ultimaVez ? new Date(p.ultimaVez).toLocaleDateString('es-VE') : '—';
+      return `
+        <tr onclick="verDetalle('${p.telefono}')">
+          <td class="nombre-cell">${nombre}</td>
+          <td class="tel-cell">+${p.telefono}</td>
+          <td><span class="badge ${badge}">${mod}</span></td>
+          <td><span class="sessions-dot">${p.sesionesVistas || 0}</span></td>
+          <td style="font-size:13px;color:var(--subtexto)">${fecha}</td>
+          <td onclick="event.stopPropagation()">
+            <div style="display:flex;gap:6px">
+              <button class="btn-sm" onclick="editarPaciente('${p.telefono}')">Editar</button>
+              <button class="btn-danger" onclick="eliminarPaciente('${p.telefono}','${nombre}')">×</button>
+            </div>
+          </td>
+        </tr>`;
+    }).join('');
+  }
+
+  function filtrar(q) {
+    if (!q) { renderTabla(todosPacientes); return; }
+    const s = q.toLowerCase();
+    renderTabla(todosPacientes.filter(p => {
+      const n = `${p.ficha?.nombres || ''} ${p.ficha?.apellidos || ''} ${p.nombreWA || ''}`.toLowerCase();
+      return n.includes(s) || (p.telefono || '').includes(s) || (p.ficha?.cedula || '').includes(s);
+    }));
+  }
+
+  function verDetalle(tel) {
+    const p = todosPacientes.find(x => x.telefono === tel);
+    if (!p) return;
+    const f = p.ficha || {};
+    const nombre = f.nombres ? `${f.nombres} ${f.apellidos}` : p.nombreWA || 'Sin nombre';
+    document.getElementById('detalle-nombre').textContent = nombre;
+    const campos = [
+      { label: 'Teléfono', val: `+${p.telefono}` },
+      { label: 'Cédula', val: f.cedula || '—' },
+      { label: 'Edad', val: f.edad || '—' },
+      { label: 'Fecha de nacimiento', val: f.fechaNac || '—' },
+      { label: 'Estado civil', val: f.edoCivil || '—' },
+      { label: 'Modalidad', val: f.modalidad || '—' },
+      { label: 'Sesiones vistas', val: p.sesionesVistas || 0 },
+      { label: 'Correo', val: f.correo || '—', full: true },
+      { label: 'Primer contacto', val: p.creadoEn ? new Date(p.creadoEn).toLocaleDateString('es-VE') : '—' },
+      { label: 'Último contacto', val: p.ultimaVez ? new Date(p.ultimaVez).toLocaleDateString('es-VE') : '—' },
+    ];
+    document.getElementById('detalle-body').innerHTML = campos.map(c =>
+      `<div class="ficha-item${c.full ? ' full' : ''}"><label>${c.label}</label><p>${c.val}</p></div>`
+    ).join('');
+    document.getElementById('detalle-footer').innerHTML = `
+      <button class="btn-outline" onclick="closeDetalle()">Cerrar</button>
+      <button class="btn-sm" onclick="closeDetalle();editarPaciente('${tel}')">Editar</button>
+    `;
+    document.getElementById('modal-detalle').classList.add('open');
+  }
+
+  function closeDetalle() { document.getElementById('modal-detalle').classList.remove('open'); }
+
+  function openModal(tel) {
+    editandoTel = tel || null;
+    document.getElementById('modal-titulo').textContent = tel ? 'Editar Paciente' : 'Agregar Paciente';
+    if (!tel) {
+      ['telefono','nombres','apellidos','cedula','edad','fechanac','telf','correo'].forEach(id => document.getElementById('f-'+id).value = '');
+      document.getElementById('f-sesiones').value = 0;
+      document.getElementById('f-edocivil').value = '';
+      document.getElementById('f-modalidad').value = '';
+    }
+    document.getElementById('modal-form').classList.add('open');
+    setTimeout(() => document.getElementById('f-telefono').focus(), 100);
+  }
+
+  function editarPaciente(tel) {
+    const p = todosPacientes.find(x => x.telefono === tel);
+    if (!p) return;
+    const f = p.ficha || {};
+    document.getElementById('f-telefono').value = p.telefono;
+    document.getElementById('f-nombres').value = f.nombres || '';
+    document.getElementById('f-apellidos').value = f.apellidos || '';
+    document.getElementById('f-cedula').value = f.cedula || '';
+    document.getElementById('f-edad').value = f.edad || '';
+    document.getElementById('f-fechanac').value = f.fechaNac || '';
+    document.getElementById('f-edocivil').value = f.edoCivil || '';
+    document.getElementById('f-modalidad').value = f.modalidad || '';
+    document.getElementById('f-telf').value = f.telefonoFicha || '';
+    document.getElementById('f-correo').value = f.correo || '';
+    document.getElementById('f-sesiones').value = p.sesionesVistas || 0;
+    openModal(tel);
+  }
+
+  function closeModal() { document.getElementById('modal-form').classList.remove('open'); editandoTel = null; }
+
+  function guardarPaciente() {
+    const body = {
+      telefono: document.getElementById('f-telefono').value.trim(),
+      nombres: document.getElementById('f-nombres').value.trim(),
+      apellidos: document.getElementById('f-apellidos').value.trim(),
+      cedula: document.getElementById('f-cedula').value.trim(),
+      edad: document.getElementById('f-edad').value.trim(),
+      fechaNac: document.getElementById('f-fechanac').value.trim(),
+      edoCivil: document.getElementById('f-edocivil').value,
+      modalidad: document.getElementById('f-modalidad').value,
+      telefonoFicha: document.getElementById('f-telf').value.trim(),
+      correo: document.getElementById('f-correo').value.trim(),
+      sesionesVistas: document.getElementById('f-sesiones').value,
+    };
+    if (!body.telefono || !body.nombres || !body.apellidos) {
+      toast('Teléfono, nombres y apellidos son obligatorios', 'error'); return;
+    }
+    fetch(`${BASE_URL}/admin/paciente?pin=${PIN}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.ok) { closeModal(); cargarPacientes(); toast('Paciente guardado ✓', 'success'); }
+      else toast(data.error || 'Error al guardar', 'error');
+    })
+    .catch(() => toast('Error de conexión', 'error'));
+  }
+
+  function eliminarPaciente(tel, nombre) {
+    if (!confirm(`¿Eliminar a ${nombre}? Esta acción no se puede deshacer.`)) return;
+    fetch(`${BASE_URL}/admin/paciente/${tel}?pin=${PIN}`, { method: 'DELETE' })
+      .then(r => r.json())
+      .then(() => { cargarPacientes(); toast('Paciente eliminado', 'success'); })
+      .catch(() => toast('Error al eliminar', 'error'));
+  }
+
+  function toast(msg, tipo = 'success') {
+    const t = document.getElementById('toast');
+    t.textContent = msg;
+    t.className = `toast ${tipo} show`;
+    setTimeout(() => t.classList.remove('show'), 3000);
+  }
+
+  // Cerrar modales al click fuera
+  document.getElementById('modal-form').addEventListener('click', e => { if (e.target === e.currentTarget) closeModal(); });
+  document.getElementById('modal-detalle').addEventListener('click', e => { if (e.target === e.currentTarget) closeDetalle(); });
+</script>
+</body>
+</html>
